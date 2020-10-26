@@ -4,7 +4,10 @@
   "description": "A BetterDiscord plug-in that converts your messages to UwU language before sending",
   "main": "UwUfy.plugin.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mvf": "xcopy .\\dist\\UwUfy.plugin.js C:\\Users\\FiercePC\\AppData\\Roaming\\BetterDiscord\\plugins",
+    "mvfl": "xcopy .\\dist\\UwUfy.plugin.js C:\\Users\\Sam\\AppData\\Roaming\\BetterDiscord\\plugins"
   },
   "devDependencies": {
     "@types/bandagedbd__bdapi": "^0.2.2",

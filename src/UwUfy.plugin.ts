@@ -29,53 +29,70 @@
 
 @else@*/
 
+// ts stuff
 // @ts-ignore
 const Bapi: any = BdApi;
+
+interface settings_obj {
+  activation_text: string;
+  converter: converter;
+}
+const default_settings: settings_obj = {
+  activation_text: "!uwu!",
+  converter: UwUconverter,
+};
+
+/**
+ * A function that converts an input string to another language
+ */
+interface converter {
+  (to_convert: string): string;
+}
+
+/**
+ * These represent Discord message objects.
+ */
+interface msg_type{
+  content: string;  // what the message says
+  invalidEmojis: Array<object>  // any emojis that failed the nitro check or don't exist
+  tts: boolean;  // whether the message will be read out loud
+  validNonShortcutEmojis: Array<object>;  // the emojis that passed the checks
+}
+
+/**
+ * This represents the information passed to `ZLibrary.DiscordModules.MessageActions.sendMessage` as the 2nd argument
+ */
+type message_info = [channel_id: string, msg: msg_type, sending_request: Promise<object>]
+
 
 module.exports = (() => {
   const config = {
     info: {
-      name: "Example Plugin",
+      name: "UwUfy",
       authors: [
         {
-          name: "Zerebos",
-          discord_id: "249746236008169473",
-          github_username: "rauenzi",
-          twitter_username: "ZackRauen",
+          name: "[DTWM] benmitchellmtbV5",
+          discord_id: "395598378387636234",
+          github_username: "SMC242",
         },
       ],
-      version: "0.0.3",
-      description: "Patcher Test Description",
-      github: "",
-      github_raw: "",
+      version: "0.0.0",
+      description:
+        "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
+      github: "https://github.com/SMC242/UwUfy",
+      github_raw:
+        "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
     },
     changelog: [
       { title: "New Stuff", items: ["Added more settings", "Added changelog"] },
-      {
-        title: "Bugs Squashed",
-        type: "fixed",
-        items: ["React errors on reload"],
-      },
-      {
-        title: "Improvements",
-        type: "improved",
-        items: ["Improvements to the base plugin"],
-      },
-      {
-        title: "On-going",
-        type: "progress",
-        items: [
-          "More modals and popouts being added",
-          "More classes and modules being added",
-        ],
-      },
     ],
-    main: "index.js",
+    main: "UwUfy.plugin.js",
   };
 
   // @ts-ignore
   return !global.ZeresPluginLibrary
     ? class {
+        _config: object;
         constructor() {
           this._config = config;
         }
@@ -126,25 +143,29 @@ module.exports = (() => {
         stop() {}
       }
     : (([Plugin, Api]) => {
-        const plugin = (Plugin, Library) => {
-          const { Logger, Patcher, Settings } = Library;
+        const UwUfy = (Plugin, Library) => {
+          const { Logger, Patcher, Settings, DiscordModules } = Library;
 
-          return class ExamplePlugin extends Plugin {
+          return class UwUfy extends Plugin {
+            settings: settings_obj;
+
             constructor() {
               super();
-              this.defaultSettings = {};
-              this.defaultSettings.color = "#ff0000";
-              this.defaultSettings.option = 50;
-              this.defaultSettings.keybind = [162, 74];
-              this.defaultSettings.radio = "weiner";
-              this.defaultSettings.slider1 = 30;
-              this.defaultSettings.slider2 = 54;
-              this.defaultSettings.textbox = "nothing";
-              this.defaultSettings.switch1 = false;
-              this.defaultSettings.switch2 = true;
-              this.defaultSettings.switch3 = true;
-              this.defaultSettings.switch4 = false;
-              this.defaultSettings.file = undefined;
+              this.settings =
+                Bapi.loadData("UwUfy", "settings") ?? default_settings;
+            }
+
+            getName() {
+              return config.info.name;
+            }
+            getAuthor() {
+              return config.info.authors.map((a) => a.name).join(", ");
+            }
+            getDescription() {
+              return config.info.description;
+            }
+            getVersion() {
+              return config.info.version;
             }
 
             onStart() {
@@ -163,17 +184,47 @@ module.exports = (() => {
               Bapi.saveData("UwUfy", "settings", this.settings);
             }
 
+            /**
+             * Sets the activation_text attribute of this.settings.
+             * NOTE: This function exists to separate the setting logic from getSettingsPanel
+             * @param new_text The new value
+             */
+            set_activation_text(new_text: string) {
+              this.settings.activation_text = new_text;
+            }
+
+            set_converter(new_converter: converter){
+              this.settings.converter = new_converter;
+            }
+
             getSettingsPanel() {
+              const converters: Array<object> = [
+                {label: "UwU", value: UwUconverter}
+              ]
+
               return Settings.SettingPanel.build(
                 this.save_settings.bind(this),
-                new Settings.SettingGroup("Example Plugin Settings").append(
-                  null
+                new Settings.Textbox(
+                  "Activation text",
+                  "The text that you must write at the start to UwUfy your message",
+                  this.settings.activation_text,
+                  this.set_activation_text.bind(this)
+                ),
+                new Settings.Dropdown(
+                  "Select converter",
+                  "This is the function that will be used to convert your message",
+                  this.settings.converter,
+                  converters,
+                  this.set_converter.bind(this),
+                  {
+                    searchable: true
+                  },
                 )
               );
             }
           };
         };
-        return plugin(Plugin, Api);
+        return UwUfy(Plugin, Api);
         // @ts-ignore
       })(global.ZeresPluginLibrary.buildPlugin(config));
 })();
