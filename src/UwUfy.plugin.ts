@@ -2,8 +2,8 @@
  * @name UwUfy
  * @invite AaMz4gp
  * @authorId "395598378387636234"
- * @website https://github.com/SMC242/CodingDND
- * @source https://raw.githubusercontent.com/SMC242/CodingDND/stable/CodingDND.plugin.js
+ * @website https://github.com/SMC242/UwUfy
+ * @source https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -116,7 +116,7 @@ module.exports = (() => {
         "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
       github: "https://github.com/SMC242/UwUfy",
       github_raw:
-        "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
+        "https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js",
     },
     changelog: [
       { title: "New Stuff", items: ["It works!"] },
