@@ -181,6 +181,12 @@ module.exports = (() => {
               Patcher.before(Logger, "log", (t, a) => {
                 a[0] = "Patched Message: " + a[0];
               });
+              // NOTE: Patcher.after is equivalent to a Python decorator that does stuff after the input function
+              Patcher.after(
+                DiscordModules.MessageActions,
+                "sendMessage",
+                this.conversion
+              );
             }
 
             onStop() {
@@ -188,6 +194,12 @@ module.exports = (() => {
               Patcher.unpatchAll();
             }
 
+            conversion(channel: object, msg_info: msg_info_type, send_status: Promise<object>) {
+              console.log(arguments);
+              const [msg_id: string, msg: object, ..._] = msg_info;
+            }
+
+            // settings stuff below
             async save_settings(): Promise<void> {
               Bapi.saveData("UwUfy", "settings", this.settings);
             }
