@@ -1,9 +1,9 @@
 /**
  * @name UwUfy
- * @invite AaMz4gp
+ * @invite d65ujkS
  * @authorId "395598378387636234"
- * @website https://github.com/SMC242/CodingDND
- * @source https://raw.githubusercontent.com/SMC242/CodingDND/stable/CodingDND.plugin.js
+ * @website https://github.com/SMC242/UwUfy
+ * @source https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -46,6 +46,7 @@ let UwUconverter = function UwUconverter(msg_content) {
         ":3",
         "=3",
         "<(^V^<)",
+        "UmU",
     ];
     const edited_text = msg_content
         .replace(/[.]/g, "!!!")
@@ -70,12 +71,19 @@ module.exports = (() => {
                     github_username: "SMC242",
                 },
             ],
-            version: "0.0.0",
+            version: "1.0.0",
             description: "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
             github: "https://github.com/SMC242/UwUfy",
-            github_raw: "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
+            github_raw: "https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js",
         },
-        changelog: [{ title: "New Stuff", items: ["It works!"] }],
+        changelog: [
+            { title: "New Stuff", items: ["It works!"] },
+            {
+                title: "Critical update!",
+                items: ["Added UmU to the list of possible kaomoji"],
+                type: "improved",
+            },
+        ],
         main: "UwUfy.plugin.js",
     };
     // @ts-ignore
@@ -152,6 +160,7 @@ module.exports = (() => {
                      * @param send_status the sending request
                      */
                     conversion(channel, msg_info, send_status) {
+                        // @ts-ignore
                         const [channel_id, msg, ..._] = msg_info;
                         // check that the user intends to uwufy
                         if (!(msg.content.indexOf(this.settings.activation_text) >= 0)) {

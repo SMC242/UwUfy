@@ -1,6 +1,6 @@
 /**
  * @name UwUfy
- * @invite AaMz4gp
+ * @invite d65ujkS
  * @authorId "395598378387636234"
  * @website https://github.com/SMC242/UwUfy
  * @source https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js
@@ -237,6 +237,7 @@ module.exports = (() => {
               msg_info: message_info,
               send_status: Promise<object>
             ) {
+              // @ts-ignore
               const [channel_id, msg, ..._] = msg_info;
               // check that the user intends to uwufy
               if (!(msg.content.indexOf(this.settings.activation_text) >= 0)) {
