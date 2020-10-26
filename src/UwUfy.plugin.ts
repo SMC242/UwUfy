@@ -55,6 +55,7 @@ let UwUconverter: converter = function UwUconverter(
     ":3",
     "=3",
     "<(^V^<)",
+    "UmU",
   ];
   const edited_text = msg_content
     .replace(/[.]/g, "!!!")
@@ -110,14 +111,21 @@ module.exports = (() => {
           github_username: "SMC242",
         },
       ],
-      version: "0.0.0",
+      version: "1.0.0",
       description:
         "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
       github: "https://github.com/SMC242/UwUfy",
       github_raw:
         "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
     },
-    changelog: [{ title: "New Stuff", items: ["It works!"] }],
+    changelog: [
+      { title: "New Stuff", items: ["It works!"] },
+      {
+        title: "Critical update!",
+        items: ["Added UmU to the list of possible kaomoji"],
+        type: "improved",
+      },
+    ],
     main: "UwUfy.plugin.js",
   };
 
