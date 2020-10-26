@@ -33,9 +33,27 @@
 const Bapi = BdApi;
 let UwUconverter = function UwUconverter(msg_content) {
     // credit to https://gist.github.com/xezno/ba8dacbc0a0b8d1788ea24273605ffcf
-    const kaomoji = ["^~^", "UwU", "OwO", "O_O", "O_o", "oWo", "OvO", "UvU", "*~*", ":3", "=3", "<(^V^<)"];
-    const edited_text = msg_content.replace(/[.]/g, "!!!").replace(/th|Th/g, "f").replace(/W/g, "w-w").replace(/l|L|r|R/g, "w").toLowerCase(); // UwUfy the text
-    return edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]; // add a kaomoji
+    const kaomoji = [
+        "^~^",
+        "UwU",
+        "OwO",
+        "O_O",
+        "O_o",
+        "oWo",
+        "OvO",
+        "UvU",
+        "*~*",
+        ":3",
+        "=3",
+        "<(^V^<)",
+    ];
+    const edited_text = msg_content
+        .replace(/[.]/g, "!!!")
+        .replace(/th|Th/g, "f")
+        .replace(/W/g, "w-w")
+        .replace(/l|L|r|R/g, "w")
+        .toLowerCase(); // UwUfy the text
+    return (edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]); // add a kaomoji
 };
 const default_settings = {
     activation_text: "!uwu!",
@@ -57,9 +75,7 @@ module.exports = (() => {
             github: "https://github.com/SMC242/UwUfy",
             github_raw: "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
         },
-        changelog: [
-            { title: "New Stuff", items: ["Added more settings", "Added changelog"] },
-        ],
+        changelog: [{ title: "New Stuff", items: ["It works!"] }],
         main: "UwUfy.plugin.js",
     };
     // @ts-ignore
@@ -123,15 +139,28 @@ module.exports = (() => {
                             a[0] = "Patched Message: " + a[0];
                         });
                         // NOTE: Patcher.after is equivalent to a Python decorator that does stuff after the input function
-                        Patcher.after(DiscordModules.MessageActions, "sendMessage", this.conversion);
+                        Patcher.after(DiscordModules.MessageActions, "sendMessage", this.conversion.bind(this));
                     }
                     onStop() {
                         Logger.log("Stopped");
                         Patcher.unpatchAll();
                     }
+                    /**
+                     * This is where the message gets edited. This is a callback to be injected into Discord so DO NOT CALL DIRECTLY
+                     * @param channel the channel that the message is being sent to
+                     * @param msg_info the msg object and such
+                     * @param send_status the sending request
+                     */
                     conversion(channel, msg_info, send_status) {
-                        console.log(arguments);
-                        const [msg_id, string, msg, object, ..._] = msg_info;
+                        const [channel_id, msg, ..._] = msg_info;
+                        // check that the user intends to uwufy
+                        if (!(msg.content.indexOf(this.settings.activation_text) >= 0)) {
+                            return;
+                        }
+                        const no_prefix = msg.content
+                            .slice(this.settings.activation_text.length)
+                            .trim(); // remove the activation text and the trailing space
+                        msg.content = this.settings.converter(no_prefix); // edit the message
                     }
                     // settings stuff below
                     async save_settings() {
@@ -150,10 +179,10 @@ module.exports = (() => {
                     }
                     getSettingsPanel() {
                         const converters = [
-                            { label: "UwU", value: UwUconverter }
+                            { label: "UwU", value: UwUconverter },
                         ];
                         return Settings.SettingPanel.build(this.save_settings.bind(this), new Settings.Textbox("Activation text", "The text that you must write at the start to UwUfy your message", this.settings.activation_text, this.set_activation_text.bind(this)), new Settings.Dropdown("Select converter", "This is the function that will be used to convert your message", this.settings.converter, converters, this.set_converter.bind(this), {
-                            searchable: true
+                            searchable: true,
                         }));
                     }
                 };

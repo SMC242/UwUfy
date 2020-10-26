@@ -38,12 +38,34 @@ interface settings_obj {
   converter: converter;
 }
 
-let UwUconverter: converter = function UwUconverter(msg_content: string): string{
+let UwUconverter: converter = function UwUconverter(
+  msg_content: string
+): string {
   // credit to https://gist.github.com/xezno/ba8dacbc0a0b8d1788ea24273605ffcf
-  const kaomoji = ["^~^","UwU","OwO","O_O","O_o","oWo","OvO","UvU","*~*",":3","=3","<(^V^<)"];
-  const edited_text = msg_content.replace(/[.]/g,"!!!").replace(/th|Th/g,"f").replace(/W/g,"w-w").replace(/l|L|r|R/g,"w").toLowerCase()  // UwUfy the text
-  return edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]  // add a kaomoji
-}
+  const kaomoji = [
+    "^~^",
+    "UwU",
+    "OwO",
+    "O_O",
+    "O_o",
+    "oWo",
+    "OvO",
+    "UvU",
+    "*~*",
+    ":3",
+    "=3",
+    "<(^V^<)",
+  ];
+  const edited_text = msg_content
+    .replace(/[.]/g, "!!!")
+    .replace(/th|Th/g, "f")
+    .replace(/W/g, "w-w")
+    .replace(/l|L|r|R/g, "w")
+    .toLowerCase(); // UwUfy the text
+  return (
+    edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]
+  ); // add a kaomoji
+};
 
 const default_settings: settings_obj = {
   activation_text: "!uwu!",
@@ -60,18 +82,22 @@ interface converter {
 /**
  * These represent Discord message objects.
  */
-interface msg_type{
-  content: string;  // what the message says
-  invalidEmojis: Array<object>  // any emojis that failed the nitro check or don't exist
-  tts: boolean;  // whether the message will be read out loud
-  validNonShortcutEmojis: Array<object>;  // the emojis that passed the checks
+interface msg_type {
+  content: string; // what the message says
+  invalidEmojis: Array<object>; // any emojis that failed the nitro check or don't exist
+  tts: boolean; // whether the message will be read out loud
+  validNonShortcutEmojis: Array<object>; // the emojis that passed the checks
 }
 
 /**
  * This represents the information passed to `ZLibrary.DiscordModules.MessageActions.sendMessage` as the 2nd argument
  */
-type message_info = [channel_id: string, msg: msg_type, sending_request: Promise<object>]
-
+type message_info = [
+  channel_id: string,
+  msg: msg_type,
+  sending_request: Promise<object>,
+  ...random_stuff: Array<unknown>
+];
 
 module.exports = (() => {
   const config = {
@@ -91,9 +117,7 @@ module.exports = (() => {
       github_raw:
         "https://github.com/SMC242/UwUfy/blob/master/dist/UwUfy.plugin.js",
     },
-    changelog: [
-      { title: "New Stuff", items: ["Added more settings", "Added changelog"] },
-    ],
+    changelog: [{ title: "New Stuff", items: ["It works!"] }],
     main: "UwUfy.plugin.js",
   };
 
@@ -185,7 +209,7 @@ module.exports = (() => {
               Patcher.after(
                 DiscordModules.MessageActions,
                 "sendMessage",
-                this.conversion
+                this.conversion.bind(this)
               );
             }
 
@@ -194,9 +218,26 @@ module.exports = (() => {
               Patcher.unpatchAll();
             }
 
-            conversion(channel: object, msg_info: msg_info_type, send_status: Promise<object>) {
-              console.log(arguments);
-              const [msg_id: string, msg: object, ..._] = msg_info;
+            /**
+             * This is where the message gets edited. This is a callback to be injected into Discord so DO NOT CALL DIRECTLY
+             * @param channel the channel that the message is being sent to
+             * @param msg_info the msg object and such
+             * @param send_status the sending request
+             */
+            conversion(
+              channel: object,
+              msg_info: message_info,
+              send_status: Promise<object>
+            ) {
+              const [channel_id, msg, ..._] = msg_info;
+              // check that the user intends to uwufy
+              if (!(msg.content.indexOf(this.settings.activation_text) >= 0)) {
+                return;
+              }
+              const no_prefix = msg.content
+                .slice(this.settings.activation_text.length)
+                .trim(); // remove the activation text and the trailing space
+              msg.content = this.settings.converter(no_prefix); // edit the message
             }
 
             // settings stuff below
@@ -213,14 +254,14 @@ module.exports = (() => {
               this.settings.activation_text = new_text;
             }
 
-            set_converter(new_converter: converter){
+            set_converter(new_converter: converter) {
               this.settings.converter = new_converter;
             }
 
             getSettingsPanel() {
               const converters: Array<object> = [
-                {label: "UwU", value: UwUconverter}
-              ]
+                { label: "UwU", value: UwUconverter },
+              ];
 
               return Settings.SettingPanel.build(
                 this.save_settings.bind(this),
@@ -237,8 +278,8 @@ module.exports = (() => {
                   converters,
                   this.set_converter.bind(this),
                   {
-                    searchable: true
-                  },
+                    searchable: true,
+                  }
                 )
               );
             }
