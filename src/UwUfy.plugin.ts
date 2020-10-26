@@ -37,6 +37,14 @@ interface settings_obj {
   activation_text: string;
   converter: converter;
 }
+
+let UwUconverter: converter = function UwUconverter(msg_content: string): string{
+  // credit to https://gist.github.com/xezno/ba8dacbc0a0b8d1788ea24273605ffcf
+  const kaomoji = ["^~^","UwU","OwO","O_O","O_o","oWo","OvO","UvU","*~*",":3","=3","<(^V^<)"];
+  const edited_text = msg_content.replace(/[.]/g,"!!!").replace(/th|Th/g,"f").replace(/W/g,"w-w").replace(/l|L|r|R/g,"w").toLowerCase()  // UwUfy the text
+  return edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]  // add a kaomoji
+}
+
 const default_settings: settings_obj = {
   activation_text: "!uwu!",
   converter: UwUconverter,
