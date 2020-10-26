@@ -238,6 +238,7 @@ module.exports = (() => {
                 .slice(this.settings.activation_text.length)
                 .trim(); // remove the activation text and the trailing space
               msg.content = this.settings.converter(no_prefix); // edit the message
+              Bapi.showToast("UwUfied successfully!");
             }
 
             // settings stuff below
