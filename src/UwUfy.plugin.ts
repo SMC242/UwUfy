@@ -101,12 +101,7 @@ interface msg_type {
  * @element2 async request to send the message
  * @element3 extra stuff I couldn't work out
  */
-type message_info = [
-  channel_id: string,
-  msg: msg_type,
-  sending_request: Promise<object>,
-  ...random_stuff: Array<unknown>
-];
+type message_info = [string, msg_type, Promise<object>, ...Array<unknown>];
 
 module.exports = (() => {
   const config = {
