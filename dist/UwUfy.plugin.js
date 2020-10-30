@@ -56,9 +56,12 @@ let UwUconverter = function UwUconverter(msg_content) {
         .toLowerCase(); // UwUfy the text
     return (edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]); // add a kaomoji
 };
+const converters = {
+    uwu: UwUconverter,
+};
 const default_settings = {
     activation_text: "!uwu!",
-    converter: UwUconverter,
+    converter_name: "uwu",
 };
 module.exports = (() => {
     const config = {
@@ -71,12 +74,20 @@ module.exports = (() => {
                     github_username: "SMC242",
                 },
             ],
-            version: "1.0.0",
+            version: "1.1.0",
             description: "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
             github: "https://github.com/SMC242/UwUfy",
             github_raw: "https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js",
         },
         changelog: [
+            {
+                title: "The settings are loaded properly now",
+                type: "fixed",
+                items: [
+                    "Please delete `UwUfy.config.json` in your plug-ins folder as its format is now invalid.",
+                    "Previously, the converter wasn't loaded when starting. This caused you to have to go and set it again each time you loaded Discord",
+                ],
+            },
             { title: "New Stuff", items: ["It works!"] },
             {
                 title: "Critical update!",
@@ -169,7 +180,7 @@ module.exports = (() => {
                         const no_prefix = msg.content
                             .slice(this.settings.activation_text.length)
                             .trim(); // remove the activation text and the trailing space
-                        msg.content = this.settings.converter(no_prefix); // edit the message
+                        msg.content = converters[this.settings.converter_name](no_prefix); // edit the message
                         Bapi.showToast("UwUfied successfully!");
                     }
                     // settings stuff below
@@ -184,14 +195,14 @@ module.exports = (() => {
                     set_activation_text(new_text) {
                         this.settings.activation_text = new_text;
                     }
-                    set_converter(new_converter) {
-                        this.settings.converter = new_converter;
+                    set_converter(new_converter_name) {
+                        this.settings.converter_name = new_converter_name;
                     }
                     getSettingsPanel() {
                         const converters = [
-                            { label: "UwU", value: UwUconverter },
+                            { label: "UwU", value: "uwu" },
                         ];
-                        return Settings.SettingPanel.build(this.save_settings.bind(this), new Settings.Textbox("Activation text", "The text that you must write at the start to UwUfy your message", this.settings.activation_text, this.set_activation_text.bind(this)), new Settings.Dropdown("Select converter", "This is the function that will be used to convert your message", this.settings.converter, converters, this.set_converter.bind(this), {
+                        return Settings.SettingPanel.build(this.save_settings.bind(this), new Settings.Textbox("Activation text", "The text that you must write at the start to UwUfy your message", this.settings.activation_text, this.set_activation_text.bind(this)), new Settings.Dropdown("Select converter", "This is the function that will be used to convert your message", this.settings.converter_name, converters, this.set_converter.bind(this), {
                             searchable: true,
                         }));
                     }

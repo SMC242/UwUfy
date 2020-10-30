@@ -35,7 +35,7 @@ const Bapi: any = BdApi;
 
 interface settings_obj {
   activation_text: string;
-  converter: converter;
+  converter_name: string;
 }
 
 let UwUconverter: converter = function UwUconverter(
@@ -68,9 +68,13 @@ let UwUconverter: converter = function UwUconverter(
   ); // add a kaomoji
 };
 
+const converters: { [name: string]: converter } = {
+  uwu: UwUconverter,
+};
+
 const default_settings: settings_obj = {
   activation_text: "!uwu!",
-  converter: UwUconverter,
+  converter_name: "uwu",
 };
 
 /**
@@ -92,6 +96,10 @@ interface msg_type {
 
 /**
  * This represents the information passed to `ZLibrary.DiscordModules.MessageActions.sendMessage` as the 2nd argument
+ * @element0 channel id
+ * @element1 message info
+ * @element2 async request to send the message
+ * @element3 extra stuff I couldn't work out
  */
 type message_info = [
   channel_id: string,
@@ -111,7 +119,7 @@ module.exports = (() => {
           github_username: "SMC242",
         },
       ],
-      version: "1.0.0",
+      version: "1.1.0",
       description:
         "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
       github: "https://github.com/SMC242/UwUfy",
@@ -119,6 +127,14 @@ module.exports = (() => {
         "https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js",
     },
     changelog: [
+      {
+        title: "The settings are loaded properly now",
+        type: "fixed",
+        items: [
+          "Please delete `UwUfy.config.json` in your plug-ins folder as its format is now invalid.",
+          "Previously, the converter wasn't loaded when starting. This caused you to have to go and set it again each time you loaded Discord",
+        ],
+      },
       { title: "New Stuff", items: ["It works!"] },
       {
         title: "Critical update!",
@@ -246,7 +262,7 @@ module.exports = (() => {
               const no_prefix = msg.content
                 .slice(this.settings.activation_text.length)
                 .trim(); // remove the activation text and the trailing space
-              msg.content = this.settings.converter(no_prefix); // edit the message
+              msg.content = converters[this.settings.converter_name](no_prefix); // edit the message
               Bapi.showToast("UwUfied successfully!");
             }
 
@@ -264,13 +280,13 @@ module.exports = (() => {
               this.settings.activation_text = new_text;
             }
 
-            set_converter(new_converter: converter) {
-              this.settings.converter = new_converter;
+            set_converter(new_converter_name: string) {
+              this.settings.converter_name = new_converter_name;
             }
 
             getSettingsPanel() {
               const converters: Array<object> = [
-                { label: "UwU", value: UwUconverter },
+                { label: "UwU", value: "uwu" },
               ];
 
               return Settings.SettingPanel.build(
@@ -284,7 +300,7 @@ module.exports = (() => {
                 new Settings.Dropdown(
                   "Select converter",
                   "This is the function that will be used to convert your message",
-                  this.settings.converter,
+                  this.settings.converter_name,
                   converters,
                   this.set_converter.bind(this),
                   {
