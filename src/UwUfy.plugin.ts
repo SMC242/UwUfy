@@ -114,7 +114,7 @@ module.exports = (() => {
           github_username: "SMC242",
         },
       ],
-      version: "1.1.0",
+      version: "1.2.0",
       description:
         "Converts your messages to UwU language before sending them. Write !uwu! at the start of your message to convert it.",
       github: "https://github.com/SMC242/UwUfy",
@@ -122,6 +122,14 @@ module.exports = (() => {
         "https://raw.githubusercontent.com/SMC242/UwUfy/master/dist/UwUfy.plugin.js",
     },
     changelog: [
+      {
+        title: "Fixed false positive bug",
+        type: "fixed",
+        items: [
+          "If you put your activation string in the middle of your message, it would UwUfy and delete the start of your message.",
+          "This is now fixed.",
+        ],
+      },
       {
         title: "The settings are loaded properly now",
         type: "fixed",
@@ -250,8 +258,11 @@ module.exports = (() => {
             ) {
               // @ts-ignore
               const [channel_id, msg, ..._] = msg_info;
-              // check that the user intends to uwufy
-              if (!(msg.content.indexOf(this.settings.activation_text) >= 0)) {
+              // check that the user intends to uwufy by looking for the activation string at the start of the message
+              const length = this.settings.activation_text.length;
+              const sliced = msg.content.slice(0, length);
+              console.log(sliced);
+              if (sliced != this.settings.activation_text) {
                 return;
               }
               const no_prefix = msg.content
