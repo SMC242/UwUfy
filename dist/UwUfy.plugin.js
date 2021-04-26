@@ -184,7 +184,6 @@ module.exports = (() => {
                         // check that the user intends to uwufy by looking for the activation string at the start of the message
                         const length = this.settings.activation_text.length;
                         const sliced = msg.content.slice(0, length);
-                        console.log(sliced);
                         if (sliced != this.settings.activation_text) {
                             return;
                         }
