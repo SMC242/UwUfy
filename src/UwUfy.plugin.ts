@@ -40,14 +40,27 @@ interface settings_obj {
 
 type Matches = Array<RegExpMatchArray>;
 const rand_int = (max_val: number) => Math.floor(Math.random() * max_val);
-const weighted_replace = (value: string)
-const flatten_matches = (matches: IterableIterator<RegExpMatchArray>): Matches => [...matches]
-const get_matches = (expr: RegExp) => (to_match: string) => flatten_matches(to_match.matchAll(expr))
-const replace_at = (start: number) => (to_add: string) => (str: string) => str.slice(0, start) + to_add + str.slice(start + to_add.length)
-const random_replace = (expr: RegExp) => (replace_chance: number) => (to_check: string): string => {
+const flatten_matches = (
+  matches: IterableIterator<RegExpMatchArray>
+): Matches => [...matches];
+const get_matches = (expr: RegExp) => (to_match: string) =>
+  flatten_matches(to_match.matchAll(expr));
+const replace_at = (to_add: string) => (start: number) => (str: string) =>
+  str.slice(0, start) + to_add + str.slice(start + to_add.length);
+const random_replace = (expr: RegExp) => (replace_chance: number) => (
+  to_check: string
+) => (to_add: string): string => {
   const matches = get_matches(expr)(to_check);
-
-}
+  let result = to_check;
+  matches.forEach((m) => {
+    if (!m.index) return;
+    result =
+      rand_int(100) > replace_chance
+        ? replace_at(to_add)(m.index)(to_check)
+        : result;
+  });
+  return result;
+};
 
 let UwUconverter: converter = function UwUconverter(
   msg_content: string
