@@ -4,7 +4,7 @@ const get_matches = (expr) => (to_match) =>
   flatten_matches(to_match.matchAll(expr));
 const replace_at = (to_add) => (start) => (str) =>
   str.slice(0, start) + to_add + str.slice(start + to_add.length);
-const random_replace = (expr) => (replace_chance) => (to_add) => (to_check) => {
+const random_replace = (expr, replace_chance, to_add) => (to_check) => {
   const matches = get_matches(expr)(to_check);
   let result = to_check;
   matches.forEach((m) => {
