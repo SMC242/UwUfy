@@ -33,6 +33,7 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
 };
 
 const replace_commas = random_replace(/[,]/g, 80, () => "=");
+// TODO: add 'matey' at the ends of sentences
 const add_commas = random_replace(
   /\s/g,
   20,
