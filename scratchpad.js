@@ -8,6 +8,8 @@ const replace_at = (to_add) => (start) => (replace_length) => (str) =>
 const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
   const matches = get_matches(expr)(to_check);
   let result = to_check;
+  // the indexes need to be offset when the replacement is longer than the string to replace
+  let length_increased = 0;
   matches.forEach((m) => {
     if (!m.index) {
       console.log(`Skipping match: ${m}`);
@@ -15,9 +17,15 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
     }
     const should_replace = replace_chance >= rand_int(100);
     const replace_str = get_to_add();
-    result = should_replace
-      ? replace_at(replace_str)(m.index)(m.length)(result)
-      : result;
+    if (should_replace) {
+      result = replace_at(replace_str)(m.index + length_increased)(m.length)(
+        result
+      );
+      length_increased =
+        replace_str.length > m.length
+          ? length_increased + replace_str.length - 1
+          : length_increased;
+    }
   });
   return result;
 };
