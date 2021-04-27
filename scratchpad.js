@@ -25,11 +25,10 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
 const tester =
   "Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day 🦵";
 const replace_commas = random_replace(/[,]/g, 80, () => "=");
-const add_commas = random_replace(
-  /\s/g,
-  30,
-  () => new Array(rand_int(2) + 1).fill(",").join("") + " "
-);
+const add_commas = random_replace(/\s/g, 30, () => {
+  const commas = [", ", ",, ", ",,, "];
+  return () => commas[rand_int(2)];
+});
 // TODO: remove ~10% of characters
 // TODO: replace 'fucking' with 'f,,' or 'facking'
 const mikeify = (str) => add_commas(replace_commas(str));
