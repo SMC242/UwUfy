@@ -16,9 +16,9 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
       return;
     }
     const should_replace = replace_chance >= rand_int(100);
-    const replace_str = get_to_add();
     if (should_replace) {
-      result = replace_at(replace_str)(m.index + length_increased)(m.length)(
+      const replace_str = get_to_add();
+      result = replace_at(replace_str)(m.index + length_increased)(m[0].length)(
         result
       );
       length_increased =
@@ -41,6 +41,7 @@ const add_commas = random_replace(
     return () => commas[rand_int(2)];
   })()
 );
+// TODO: replace 'fucking' with 'f,,' or 'facking'
 const replace_swear = random_replace(
   /fucking/g,
   100,
@@ -49,8 +50,8 @@ const replace_swear = random_replace(
     return () => replacements[rand_int(1)];
   })()
 );
-const remove_chars = random_replace(/[^AOIUEaoiue]/g, 1, () => "");
-// TODO: replace 'fucking' with 'f,,' or 'facking'
+// TODO: remove some consonants at the ends of words
+const remove_chars = random_replace(/[^AOIUEaoiue]/g, 2, () => "");
 // Possible optimisation: gather a list of things to replace and apply them all in one pass
 const mikeify = (str) =>
   remove_chars(replace_swear(add_commas(replace_commas(str))));
