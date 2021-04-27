@@ -21,10 +21,12 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
       result = replace_at(replace_str)(m.index + length_increased)(m[0].length)(
         result
       );
-      length_increased =
-        replace_str.length > m.length
-          ? length_increased + replace_str.length - 1
-          : length_increased;
+      // Handle the change in length of the result
+      if (replace_str.length < m[0].length) {
+        length_increased -= replace_str.length + 1;
+      } else if (replace_str.length > m[0].length) {
+        length_increased += replace_str.length - 1;
+      }
     }
   });
   return result;
@@ -41,7 +43,7 @@ const add_commas = random_replace(
     return () => commas[rand_int(2)];
   })()
 );
-// TODO: replace 'fucking' with 'f,,' or 'facking'
+const replace_connectives = random_replace(/and|or/g, 100, () => "=");
 const replace_swear = random_replace(
   /fucking/g,
   100,
@@ -50,11 +52,9 @@ const replace_swear = random_replace(
     return () => replacements[rand_int(1)];
   })()
 );
-// TODO: remove some consonants at the ends of words
-const remove_chars = random_replace(/[^AOIUEaoiue]/g, 2, () => "");
 // Possible optimisation: gather a list of things to replace and apply them all in one pass
 const mikeify = (str) =>
-  remove_chars(replace_swear(add_commas(replace_commas(str))));
+  replace_swear(add_commas(replace_connectives(replace_commas(str))));
 
 // matches -> take {replace_chance} portion of matches -> replace those
 const linear_tester =
