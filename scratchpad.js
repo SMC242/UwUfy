@@ -41,9 +41,19 @@ const add_commas = random_replace(
     return () => commas[rand_int(2)];
   })()
 );
-// TODO: remove ~10% of characters
+const replace_swear = random_replace(
+  /fucking/g,
+  100,
+  (() => {
+    const replacements = ["facking", "f,,"];
+    return () => replacements[rand_int(1)];
+  })()
+);
+const remove_chars = random_replace(/[^AOIUEaoiue]/g, 1, () => "");
 // TODO: replace 'fucking' with 'f,,' or 'facking'
-const mikeify = (str) => add_commas(replace_commas(str));
+// Possible optimisation: gather a list of things to replace and apply them all in one pass
+const mikeify = (str) =>
+  remove_chars(replace_swear(add_commas(replace_commas(str))));
 
 // matches -> take {replace_chance} portion of matches -> replace those
 const linear_tester =
