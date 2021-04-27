@@ -31,7 +31,7 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
 };
 
 const tester =
-  "Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day 🦵";
+  "Hello mateys, my name is Mike33. I hate the fucking poodlefit and i'm the leader of BHO, the best clan on NC Miller, has the most ASP members, and carrys the NC all day long. I'm very strong never skip leg day 🦵";
 const replace_commas = random_replace(/[,]/g, 80, () => "=");
 const add_commas = random_replace(
   /\s/g,
