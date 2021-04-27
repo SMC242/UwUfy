@@ -27,7 +27,7 @@ const tester =
 const replace_commas = random_replace(/[,]/g, 80, () => "=");
 const add_commas = random_replace(
   /\s/g,
-  30,
+  20,
   (() => {
     const commas = [", ", ",, ", ",,, "];
     return () => commas[rand_int(2)];
