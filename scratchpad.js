@@ -28,7 +28,10 @@ const replace_commas = random_replace(/[,]/g, 80, () => "=");
 const add_commas = random_replace(
   /\s/g,
   30,
-  () => new Array(rand_int(2) + 1).fill(",").join("") + " "
+  (() => {
+    const commas = [", ", ",, ", ",,, "];
+    return () => commas[rand_int(2)];
+  })()
 );
 // TODO: remove ~10% of characters
 // TODO: replace 'fucking' with 'f,,' or 'facking'
