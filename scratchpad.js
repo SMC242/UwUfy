@@ -43,7 +43,7 @@ const add_commas = random_replace(
     return () => commas[rand_int(2)];
   })()
 );
-const replace_connectives = random_replace(/and|or/g, 100, () => "=");
+const replace_connectives = random_replace(/\b(and|or)\b/g, 100, () => "=");
 const replace_swear = random_replace(
   /fucking/g,
   100,
