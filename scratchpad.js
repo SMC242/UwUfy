@@ -32,9 +32,8 @@ const random_replace = (expr, replace_chance, get_to_add) => (to_check) => {
   return result;
 };
 
-const tester =
-  "Hello mateys, my name is Mike33. I hate the fucking poodlefit and i'm the leader of BHO, the best clan on NC Miller, has the most ASP members, and carrys the NC all day long. I'm very strong never skip leg day 🦵";
 const replace_commas = random_replace(/[,]/g, 80, () => "=");
+// TODO: add 'matey' at the ends of sentences
 const add_commas = random_replace(
   /\s/g,
   20,
@@ -55,29 +54,8 @@ const replace_swear = random_replace(
 // Possible optimisation: gather a list of things to replace and apply them all in one pass
 const mikeify = (str) =>
   replace_swear(add_commas(replace_connectives(replace_commas(str))));
-
-// matches -> take {replace_chance} portion of matches -> replace those
-const linear_tester =
-  "Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan on NC Miller, has the most ASP members, and carrys the NC. I'm very strong and never skip leg day :leg:Hello mateys, my name is Mike33. I hate the fucking poodlefit and am the leader of BHO which is the best clan";
-
-function linear_search() {
-  let indexes = {
-    " ": [],
-    ",": [],
-  };
-  for (const [index, char] of Object.entries(linear_tester)) {
-    switch (char) {
-      case " ":
-        indexes[" "].push(parseInt(index));
-        break;
-      case ",":
-        indexes[","].push(parseInt(index));
-        break;
-    }
-  }
-  return indexes;
-}
-
+const tester =
+  "Hello mateys, my name is Mike33. I hate the fucking poodlefit and i'm the leader of BHO, the best clan on NC Miller, has the most ASP members, and carrys the NC all day long. I'm very strong never skip leg day 🦵";
 const start = process.hrtime();
 // console.log(linear_search());
 console.log(mikeify(tester)); // TODO: optimise performance to <0.5s
