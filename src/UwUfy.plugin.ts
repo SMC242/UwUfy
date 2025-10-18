@@ -69,14 +69,18 @@ let UwUconverter: converter = function UwUconverter(
   // credit to https://gist.github.com/xezno/ba8dacbc0a0b8d1788ea24273605ffcf
   const kaomoji = [
     "^~^",
+    "^~^",
+    "^w^",
+    ">w<",
     "UwU",
+    "owo",
     "OwO",
     "O_O",
     "O_o",
     "oWo",
     "OvO",
     "UvU",
-    "*~*",
+    "\*~\*",
     ":3",
     "=3",
     "<(^V^<)",
@@ -87,6 +91,7 @@ let UwUconverter: converter = function UwUconverter(
     .replace(/th|Th/g, "f")
     .replace(/W/g, "w-w")
     .replace(/l|L|r|R/g, "w")
+    .replace(/n([aeiou])/g, "ny$1")
     .toLowerCase(); // UwUfy the text
   return (
     edited_text + " " + kaomoji[Math.floor(Math.random() * kaomoji.length)]
